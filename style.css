@@ -1,0 +1,303 @@
+:root {
+  --x: #1877f2;
+  --o: #ef3b52;
+  --panel: rgba(12, 12, 14, 0.88);
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #0b0b0d;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  color: #fff;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+/* Stage keeps the photo's aspect ratio so every overlay can be placed in % */
+.stage {
+  position: relative;
+  aspect-ratio: 768 / 1024;
+  height: min(96vh, 1100px);
+  max-width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  container-type: inline-size;
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ---------- Title ---------- */
+.title {
+  position: absolute;
+  top: 1.5%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-family: "Luckiest Guy", "Inter", sans-serif;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.title span { display: block; }
+
+.title-line-1 {
+  font-size: 8.5cqw;
+  color: #fff;
+  -webkit-text-stroke: 0.7cqw #12121a;
+  paint-order: stroke fill;
+  text-shadow: 0 0.6cqw 0 rgba(0, 0, 0, 0.35);
+}
+
+.title-line-2 {
+  font-size: 7.5cqw;
+  color: var(--x);
+  -webkit-text-stroke: 0.7cqw #12121a;
+  paint-order: stroke fill;
+  text-shadow: 0 0.6cqw 0 rgba(0, 0, 0, 0.35);
+}
+
+.title-line-2 .hl { display: inline; color: #fff; }
+.title .mark-x { display: inline; color: var(--x); }
+.title .mark-o { display: inline; color: var(--o); }
+
+/* ---------- Board over the forehead ---------- */
+.board {
+  position: absolute;
+  left: 19%;
+  top: 16%;
+  width: 60%;
+  height: 21%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  transform: rotate(-1.2deg);
+}
+
+.grid-lines, .win-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.grid-lines path {
+  fill: none;
+  stroke: #2b1d14;
+  stroke-width: 6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.92;
+  filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.25));
+}
+
+.win-line path {
+  fill: none;
+  stroke: #ffd23f;
+  stroke-width: 8;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 6px rgba(255, 210, 63, 0.9));
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+}
+
+.win-line.show path { animation: draw 0.45s ease forwards; }
+
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.cell {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-family: "Luckiest Guy", sans-serif;
+  font-size: 11cqw;
+  line-height: 1;
+  color: transparent;
+  transition: background-color 0.15s ease;
+  border-radius: 10px;
+}
+
+.cell:hover:not(.taken) { background: rgba(255, 255, 255, 0.18); }
+.cell.taken { cursor: default; }
+.cell:disabled { cursor: default; }
+
+.cell span {
+  display: block;
+  transform: rotate(-4deg) scale(0.4);
+  opacity: 0;
+  transition: transform 0.18s cubic-bezier(0.2, 1.6, 0.4, 1), opacity 0.18s ease;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.cell.filled span { transform: rotate(-4deg) scale(1); opacity: 1; }
+.cell.x { color: var(--x); }
+.cell.o { color: var(--o); }
+
+/* ---------- Panels ---------- */
+.panel {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 3cqw 2.5cqw;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+
+.panel-score {
+  position: absolute;
+  left: 3.5%;
+  top: 40%;
+  width: 24%;
+}
+
+.score-row { display: block; }
+.score-label {
+  display: block;
+  font-size: 2cqw;
+  white-space: nowrap;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+.label-x { color: var(--x); }
+.label-o { color: var(--o); }
+.score-value {
+  display: block;
+  font-family: "Luckiest Guy", sans-serif;
+  font-size: 5.4cqw;
+  line-height: 1.1;
+}
+.value-x { color: var(--x); }
+.value-o { color: var(--o); }
+#turnValue { color: var(--x); }
+#turnValue.o { color: var(--o); }
+
+.panel hr {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  margin: 1.2cqw 0;
+}
+
+.right-stack {
+  position: absolute;
+  right: 3.5%;
+  top: 44%;
+  width: 31%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4cqw;
+}
+
+.panel-status .status-title {
+  font-family: "Luckiest Guy", sans-serif;
+  font-size: 5cqw;
+  line-height: 1.05;
+  color: var(--x);
+}
+.panel-status.lose .status-title { color: var(--o); }
+.panel-status.draw .status-title { color: #ffd23f; }
+.panel-status .status-sub {
+  margin-top: 0.8cqw;
+  font-size: 2.2cqw;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.btn {
+  font-family: "Inter", sans-serif;
+  font-size: 2.2cqw;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--panel);
+  border: 0;
+  border-radius: 14px;
+  padding: 2cqw 1cqw;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.btn:hover { filter: brightness(1.25); }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--x); }
+
+.tagline {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  border-radius: 999px;
+  padding: 1.8cqw 4cqw;
+  font-size: 2.4cqw;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+.modal-backdrop[hidden] { display: none; }
+
+.modal {
+  background: #16161a;
+  border-radius: 20px;
+  padding: 26px;
+  max-width: 460px;
+  width: 100%;
+}
+.modal h2 {
+  margin: 0 0 12px;
+  font-family: "Luckiest Guy", sans-serif;
+  font-weight: 400;
+  font-size: 28px;
+}
+.modal ol { margin: 0 0 20px; padding-left: 20px; line-height: 1.6; font-size: 15px; }
+.modal .btn { width: 100%; font-size: 14px; padding: 14px; }
+.modal .mark-x { color: var(--x); }
+.modal .mark-o { color: var(--o); }
+
+@media (max-width: 520px) {
+  body { padding: 0; }
+  .stage { height: 100vh; border-radius: 0; }
+}

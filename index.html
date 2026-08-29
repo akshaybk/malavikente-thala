@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Forehead Tic Tac Toe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Inter:wght@600;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<main class="stage" id="stage">
+  <img class="photo" src="assets/forehead.jpg" alt="Forehead playing field" />
+
+  <h1 class="title">
+    <span class="title-line-1">Forehead</span>
+    <span class="title-line-2"><span class="mark-x">&times;</span> Tic <span class="hl">Tac</span> Toe <span class="mark-o">&#9675;</span></span>
+  </h1>
+
+  <div class="board" id="board" role="grid" aria-label="Tic tac toe board">
+    <svg class="grid-lines" viewBox="0 0 300 300" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M104 8 C102 100, 106 200, 101 292" />
+      <path d="M199 6 C197 100, 201 200, 196 294" />
+      <path d="M6 101 C100 98, 200 104, 294 99" />
+      <path d="M8 199 C100 196, 200 202, 292 197" />
+    </svg>
+    <svg class="win-line" id="winLine" viewBox="0 0 300 300" preserveAspectRatio="none" aria-hidden="true">
+      <path id="winPath" d="" />
+    </svg>
+  </div>
+
+  <section class="panel panel-score" aria-label="Score">
+    <div class="score-row">
+      <span class="score-label label-x">Player 1 (X)</span>
+      <span class="score-value value-x" id="scoreX">0</span>
+    </div>
+    <hr />
+    <div class="score-row">
+      <span class="score-label label-o">Player 2 (O)</span>
+      <span class="score-value value-o" id="scoreO">0</span>
+    </div>
+    <hr />
+    <div class="score-row">
+      <span class="score-label">Draws</span>
+      <span class="score-value value-draw" id="scoreDraws">0</span>
+    </div>
+    <hr />
+    <div class="score-row">
+      <span class="score-label">Turn</span>
+      <span class="score-value" id="turnValue">X</span>
+    </div>
+  </section>
+
+  <div class="right-stack">
+    <section class="panel panel-status" id="statusPanel" aria-live="polite">
+      <div class="status-title" id="statusTitle">Player 1</div>
+      <div class="status-sub" id="statusSub">X &mdash; tap the forehead &#128070;</div>
+    </section>
+    <button class="btn btn-primary" id="resetBtn">&#8635; Reset</button>
+    <button class="btn" id="soundBtn" aria-pressed="true">&#128266; Sound: On</button>
+    <button class="btn" id="swapBtn">&#128257; Starts: Player 1 (X)</button>
+    <button class="btn" id="howBtn">&#9432; How to play</button>
+  </div>
+
+  <footer class="tagline" id="tagline">Two players. One forehead. All the glory. &#128526;</footer>
+</main>
+
+<div class="modal-backdrop" id="modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">How to play</h2>
+    <ol>
+      <li>Two players, one screen. <b class="mark-x">Player 1</b> is X, <b class="mark-o">Player 2</b> is O &mdash; take turns tapping squares on the forehead.</li>
+      <li>The status panel always shows whose turn it is. <b>Starts</b> flips who goes first in the next round.</li>
+      <li>Get three in a row &mdash; across, down or diagonally &mdash; to win the round.</li>
+      <li><b>Reset</b> clears the board. Scores keep counting until you reload.</li>
+      <li>No computer opponent &mdash; the forehead is just the battlefield.</li>
+    </ol>
+    <button class="btn btn-primary" id="closeModal">Got it</button>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
