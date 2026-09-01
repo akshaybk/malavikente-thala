@@ -1,9 +1,10 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+const stage = document.getElementById('stage');
 
-const W = canvas.width;
-const H = canvas.height;
+const H = 420;
 const GROUND_Y = H - 68;
+let W = 1200;
 
 const scoreEl = document.getElementById('score');
 const hiEl = document.getElementById('hiScore');
@@ -36,6 +37,7 @@ const state = {
 
 const runner = {
   x: 130,
+  baseX: 130,
   y: GROUND_Y,
   vy: 0,
   bodyW: 54,
@@ -50,6 +52,27 @@ const GRAVITY = 0.85;
 const JUMP_V = -15.5;
 const HOLD_LIFT = -0.34;
 const MAX_HOLD_FRAMES = 12;
+
+/* ---------- responsive canvas ---------- */
+// keep reaction time constant when the visible track is narrower
+function viewScale() { return Math.max(0.62, W / 1200); }
+
+function fit() {
+  const cssW = stage.clientWidth || 1200;
+  const cssH = stage.clientHeight || 420;
+  const aspect = Math.min(3, Math.max(1.5, cssW / cssH));
+
+  W = Math.round(H * aspect);
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+
+  canvas.width = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  runner.x = Math.max(70, Math.min(runner.baseX, W * 0.16));
+
+  if (!state.running) render();
+}
 
 /* ---------- audio ---------- */
 let audioCtx = null;
@@ -110,15 +133,16 @@ function spawnObstacle() {
     });
   } else {
     const count = 1 + Math.floor(Math.random() * 3);
-    const w = 20 + count * 16;
-    const h = 46 + Math.random() * 34;
+    const h = 44 + Math.random() * 26;
+    const w = h * 0.95 + (count - 1) * h * 0.72;
     state.obstacles.push({
-      type: 'cactus',
+      type: 'roach',
       x: W + 40,
       y: GROUND_Y - h,
       w,
       h,
-      count
+      count,
+      wiggle: Math.random() * 10
     });
   }
 
@@ -161,41 +185,89 @@ function drawClouds() {
   });
 }
 
-function drawCactus(o) {
-  ctx.fillStyle = '#3f9e52';
-  const stemW = 16;
-  ctx.fillRect(o.x, o.y, stemW, o.h);
+function drawRoach(cx, cy, size, phase, winged) {
+  const legSwing = Math.sin(phase) * size * 0.09;
 
-  if (o.count > 1) {
-    ctx.fillRect(o.x - 14, o.y + o.h * 0.32, 14, 10);
-    ctx.fillRect(o.x - 14, o.y + o.h * 0.32, 10, o.h * 0.42);
+  ctx.save();
+  ctx.translate(cx, cy);
+
+  // legs
+  ctx.strokeStyle = '#3d2312';
+  ctx.lineWidth = Math.max(2, size * 0.055);
+  ctx.lineCap = 'round';
+  for (let i = -1; i <= 1; i++) {
+    const ox = i * size * 0.24;
+    const swing = legSwing * (i === 0 ? -1 : 1);
+    ctx.beginPath();
+    ctx.moveTo(ox, -size * 0.05);
+    ctx.lineTo(ox - size * 0.3 + swing, size * 0.34);
+    ctx.moveTo(ox, -size * 0.05);
+    ctx.lineTo(ox + size * 0.3 - swing, size * 0.34);
+    ctx.stroke();
   }
-  if (o.count > 2) {
-    ctx.fillRect(o.x + stemW, o.y + o.h * 0.2, 14, 10);
-    ctx.fillRect(o.x + stemW + 4, o.y + o.h * 0.2, 10, o.h * 0.5);
+
+  // antennae
+  ctx.lineWidth = Math.max(1.5, size * 0.04);
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.28, -size * 0.12);
+  ctx.quadraticCurveTo(-size * 0.6, -size * 0.4 + legSwing, -size * 0.78, -size * 0.16);
+  ctx.moveTo(-size * 0.28, -size * 0.12);
+  ctx.quadraticCurveTo(-size * 0.58, -size * 0.02 - legSwing, -size * 0.8, size * 0.12);
+  ctx.stroke();
+
+  if (winged) {
+    const flap = Math.sin(phase * 2) * size * 0.18;
+    ctx.fillStyle = 'rgba(120, 76, 40, 0.75)';
+    ctx.beginPath();
+    ctx.ellipse(size * 0.02, -size * 0.28 - flap, size * 0.42, size * 0.16, -0.25, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(size * 0.02, size * 0.28 + flap, size * 0.42, size * 0.16, 0.25, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // body
+  ctx.fillStyle = '#5b3418';
+  ctx.beginPath();
+  ctx.ellipse(size * 0.05, 0, size * 0.5, size * 0.32, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // shell split
+  ctx.strokeStyle = '#3d2312';
+  ctx.lineWidth = Math.max(1.5, size * 0.04);
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.12, 0);
+  ctx.lineTo(size * 0.52, 0);
+  ctx.stroke();
+
+  // head
+  ctx.fillStyle = '#42250f';
+  ctx.beginPath();
+  ctx.ellipse(-size * 0.34, 0, size * 0.19, size * 0.21, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // eyes
+  ctx.fillStyle = '#f5e9d8';
+  ctx.beginPath();
+  ctx.arc(-size * 0.4, -size * 0.09, size * 0.045, 0, Math.PI * 2);
+  ctx.arc(-size * 0.4, size * 0.09, size * 0.045, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawRoachPack(o) {
+  const size = o.h;
+  const step = size * 0.72;
+  for (let i = 0; i < o.count; i++) {
+    const cx = o.x + size * 0.5 + i * step;
+    const bob = Math.sin(state.frame / 5 + i * 1.4 + o.wiggle) * size * 0.05;
+    drawRoach(cx, o.y + size * 0.5 + bob, size, state.frame / 3 + i, false);
   }
 }
 
 function drawBird(o) {
-  const up = Math.floor(o.wing / 8) % 2 === 0;
-  ctx.fillStyle = '#3a3a46';
-  ctx.beginPath();
-  ctx.ellipse(o.x + o.w / 2, o.y + o.h / 2, o.w / 2, o.h / 3.4, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(o.x + 16, o.y + o.h / 2);
-  ctx.lineTo(o.x + 40, up ? o.y - 6 : o.y + o.h + 6);
-  ctx.lineTo(o.x + 52, o.y + o.h / 2);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.moveTo(o.x, o.y + o.h / 2 - 3);
-  ctx.lineTo(o.x - 12, o.y + o.h / 2);
-  ctx.lineTo(o.x, o.y + o.h / 2 + 3);
-  ctx.closePath();
-  ctx.fill();
+  drawRoach(o.x + o.w / 2, o.y + o.h / 2, o.w * 0.92, o.wing / 3, true);
 }
 
 function drawRunner() {
@@ -254,7 +326,7 @@ function drawRunner() {
 /* ---------- loop ---------- */
 function update() {
   state.frame++;
-  state.speed = Math.min(19, 8 + state.score / 240);
+  state.speed = Math.min(19, 8 + state.score / 240) * viewScale();
   state.ground += state.speed;
   state.score += state.speed / 7;
 
@@ -308,7 +380,7 @@ function render() {
 
   drawClouds();
   drawGround();
-  state.obstacles.forEach((o) => (o.type === 'bird' ? drawBird(o) : drawCactus(o)));
+  state.obstacles.forEach((o) => (o.type === 'bird' ? drawBird(o) : drawRoachPack(o)));
   drawRunner();
 }
 
@@ -404,8 +476,24 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
-canvas.addEventListener('pointerdown', () => jump());
+canvas.addEventListener('pointerdown', (e) => { e.preventDefault(); jump(); });
 document.addEventListener('pointerup', () => { state.jumpHeld = false; });
+document.addEventListener('pointercancel', () => { state.jumpHeld = false; });
+
+const jumpPad = document.getElementById('jumpPad');
+const duckPad = document.getElementById('duckPad');
+
+jumpPad.addEventListener('pointerdown', (e) => { e.preventDefault(); jump(); });
+jumpPad.addEventListener('pointerup', () => { state.jumpHeld = false; });
+jumpPad.addEventListener('pointerleave', () => { state.jumpHeld = false; });
+
+duckPad.addEventListener('pointerdown', (e) => { e.preventDefault(); setDuck(true); });
+duckPad.addEventListener('pointerup', () => setDuck(false));
+duckPad.addEventListener('pointerleave', () => setDuck(false));
+duckPad.addEventListener('pointercancel', () => setDuck(false));
+
+window.addEventListener('resize', fit);
+window.addEventListener('orientationchange', () => setTimeout(fit, 250));
 
 startBtn.addEventListener('click', (e) => { e.stopPropagation(); start(); });
 retryBtn.addEventListener('click', (e) => { e.stopPropagation(); start(); });
@@ -417,5 +505,5 @@ soundBtn.addEventListener('click', () => {
 });
 
 hiEl.textContent = pad(state.hi);
-headImg.onload = render;
-render();
+headImg.onload = () => { if (!state.running) render(); };
+fit();

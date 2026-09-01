@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>Dino Head Run</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,7 +18,7 @@
   </header>
 
   <div class="stage" id="stage">
-    <canvas id="game" width="1200" height="420" aria-label="Endless runner"></canvas>
+    <canvas id="game" aria-label="Endless runner"></canvas>
 
     <div class="hud">
       <span class="hud-item">HI <b id="hiScore">00000</b></span>
@@ -29,6 +29,7 @@
       <div class="screen-card">
         <h2>Run for it</h2>
         <p><b>Space</b> / <b>&uarr;</b> / tap to jump &middot; <b>&darr;</b> to duck</p>
+        <p class="screen-note">Hop the cockroaches, duck the flying ones.</p>
         <button class="btn btn-primary btn-big" id="startBtn">&#127939; Start running</button>
       </div>
     </div>
@@ -43,7 +44,12 @@
     </div>
   </div>
 
-  <p class="hint">Tip: hold jump a touch longer for a higher hop. Ducking slides you under the flying heads.</p>
+  <div class="touch-controls">
+    <button class="pad" id="duckPad" type="button" aria-label="Duck">&#8681; Duck</button>
+    <button class="pad pad-jump" id="jumpPad" type="button" aria-label="Jump">&#8679; Jump</button>
+  </div>
+
+  <p class="hint">Tip: hold jump a touch longer for a higher hop. Ducking slides you under the flying roaches.</p>
 </div>
 
 <script src="runner.js"></script>
