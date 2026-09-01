@@ -1,0 +1,141 @@
+:root {
+  --bg: #08080c;
+  --panel: rgba(18, 18, 26, 0.92);
+  --line: rgba(255, 255, 255, 0.09);
+  --text: #f4f5fb;
+  --muted: #a3a6b8;
+  --x: #2f7bff;
+  --o: #ff4d6d;
+  --hl: #ffd23f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 5vh 5vw 6vh;
+  font-family: Inter, system-ui, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(47, 123, 255, 0.22), transparent 45%),
+    radial-gradient(circle at 90% 15%, rgba(255, 77, 109, 0.18), transparent 45%),
+    var(--bg);
+}
+
+.hub-head { text-align: center; margin-bottom: 4vh; }
+
+.hub-title {
+  font-family: "Luckiest Guy", Inter, sans-serif;
+  font-size: clamp(38px, 7vw, 78px);
+  letter-spacing: 2px;
+  margin: 0;
+  text-shadow: 0 6px 0 rgba(0, 0, 0, 0.55);
+}
+
+.hl { color: var(--hl); }
+
+.hub-sub { color: var(--muted); margin: 10px 0 0; font-size: clamp(14px, 1.6vw, 18px); }
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+a.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 210, 63, 0.55);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55);
+}
+
+.card-art {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #101018;
+  display: grid;
+  place-items: center;
+}
+
+.card-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.art-ttt img { object-position: 50% 22%; }
+
+.card-mark {
+  position: absolute;
+  font-family: "Luckiest Guy", Inter, sans-serif;
+  font-size: 54px;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+.card-mark.mark-x { color: var(--x); left: 26%; top: 22%; }
+.card-mark.mark-o { color: var(--o); right: 26%; top: 34%; }
+
+.art-run {
+  background: linear-gradient(180deg, #1a1c26 0%, #2b2416 100%);
+}
+
+.art-run img {
+  width: 58%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.6));
+}
+
+.cactus {
+  position: absolute;
+  right: 12%;
+  bottom: 14%;
+  width: 14px;
+  height: 46px;
+  border-radius: 8px;
+  background: #4caf50;
+  box-shadow: -14px -6px 0 -4px #4caf50, 14px -12px 0 -4px #4caf50;
+}
+
+.art-soon { font-size: 60px; filter: grayscale(0.4); opacity: 0.75; }
+
+.card-body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+
+.card-body h2 { margin: 0; font-size: 21px; }
+
+.card-body p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
+
+.badge {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--muted);
+}
+
+.badge-live { background: rgba(76, 175, 80, 0.18); color: #7ee08a; }
+
+.card-cta { margin-top: 6px; font-weight: 800; color: var(--hl); font-size: 14px; }
+
+.card-soon { opacity: 0.62; }
+
+.hub-foot { text-align: center; color: var(--muted); margin-top: 5vh; font-size: 13px; }

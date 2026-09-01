@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Dino Head Run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Inter:wght@600;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="btn btn-ghost" href="../../index.html">&larr; Arcade</a>
+    <h1 class="title">Dino <span class="hl">Head</span> Run</h1>
+    <button class="btn btn-ghost" id="soundBtn" aria-pressed="true">&#128266; Sound: On</button>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="game" width="1200" height="420" aria-label="Endless runner"></canvas>
+
+    <div class="hud">
+      <span class="hud-item">HI <b id="hiScore">00000</b></span>
+      <span class="hud-item">SCORE <b id="score">00000</b></span>
+    </div>
+
+    <div class="screen" id="startScreen">
+      <div class="screen-card">
+        <h2>Run for it</h2>
+        <p><b>Space</b> / <b>&uarr;</b> / tap to jump &middot; <b>&darr;</b> to duck</p>
+        <button class="btn btn-primary btn-big" id="startBtn">&#127939; Start running</button>
+      </div>
+    </div>
+
+    <div class="screen" id="overScreen" hidden>
+      <div class="screen-card">
+        <h2 class="over-title">Splat!</h2>
+        <p id="overLine">Score 0</p>
+        <button class="btn btn-primary btn-big" id="retryBtn">&#8635; Run again</button>
+        <a class="btn btn-big" href="../../index.html">&#127968; Arcade</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint">Tip: hold jump a touch longer for a higher hop. Ducking slides you under the flying heads.</p>
+</div>
+
+<script src="runner.js"></script>
+</body>
+</html>
