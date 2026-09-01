@@ -132,7 +132,7 @@ function spawnObstacle() {
       wing: 0
     });
   } else {
-    const count = 1 + Math.floor(Math.random() * 3);
+    const count = 1 + Math.floor(Math.random() * 2);
     const h = 44 + Math.random() * 26;
     const w = h * 0.95 + (count - 1) * h * 0.72;
     state.obstacles.push({
